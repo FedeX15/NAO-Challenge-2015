@@ -1,0 +1,5 @@
+topic: ~InputNumber()
+language: iti
+u:(_[1 2 3 4 5])ok, ora dimmi il secondo numero $Ni1 = $1 
+    u2:(_[1 2 3 4 5])bene, adesso dimmi l'ultimo numero $Ni2= $1
+        u3:(_[1 2 3 4 5])ok! $Ni3 = $1 $fine = 1

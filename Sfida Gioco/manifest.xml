@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<package uuid="sfidagioco-c790d3">
+ <names>
+  <name lang="en_US">SfidaGioco</name>
+ </names>
+ <supportedLanguages>
+  <language>en_US</language>
+ </supportedLanguages>
+ <descriptionLanguages>
+  <language>en_US</language>
+ </descriptionLanguages>
+ <contents>
+  <behaviorContent path="behavior_1">
+   <nature>interactive</nature>
+   <permissions/>
+  </behaviorContent>
+  <dialogContent typeVersion="1.0" topicName="InputNumber">
+   <topic path="InputNumber/InputNumber_iti.top" language="it_IT"/>
+  </dialogContent>
+ </contents>
+</package>

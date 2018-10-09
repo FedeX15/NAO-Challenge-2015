@@ -1,0 +1,1317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ChoregrapheProject xmlns="http://www.aldebaran-robotics.com/schema/choregraphe/project.xsd" xar_version="3">
+    <Box name="root" id="-1" localization="8" tooltip="Root box of Choregraphe&apos;s behavior. Highest level possible." x="0" y="0">
+        <bitmap>media/images/box/root.png</bitmap>
+        <script language="4">
+            <content>
+                <![CDATA[]]>
+</content>
+        </script>
+        <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+        <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+        <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+        <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+        <Timeline enable="0">
+            <BehaviorLayer name="behavior_layer1">
+                <BehaviorKeyframe name="keyframe1" index="1">
+                    <Diagram scale="70.7107">
+                        <Box name="Set Language" id="2" localization="8" tooltip="Select the language you would like the robot to speak and understand. Any following call to&#x0A;ALSpeechRecognition (Speech Reco. box for instance) or ALTextToSpeech (Say box&#x0A;for instance) will use this language." x="81" y="28">
+                            <bitmap>media/images/box/interaction/say.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        try:
+            self.tts = ALProxy("ALTextToSpeech")
+        except:
+            self.logger.warn("ALTextToSpeech is not available, language setting cannot be applied to speech")
+            self.tts = None
+
+        try:
+            self.asr = ALProxy("ALSpeechRecognition")
+        except:
+            self.logger.warn("ALSpeechRecognition is not available, language setting cannot be applied to recognition")
+            self.asr = None
+
+        try:
+            self.dialog = ALProxy("ALDialog")
+        except:
+            self.logger.warn("ALDialog is not available, language setting cannot be applied to dialog")
+            self.dialog = None
+
+    def onInput_onSet(self):
+        lang = self.getParameter("Language")
+        try:
+            if self.asr:
+                self.asr.setLanguage( self.getParameter("Language") )
+            if self.tts:
+                self.tts.setLanguage( self.getParameter("Language") )
+            if self.dialog:
+                self.dialog.setLanguage( self.getParameter("Language") )
+            if self.tts is None and self.asr is None and self.dialog is None:
+                raise RuntimeError("Cannot set language: neither ALTextToSpeech nor ALSpeechRecognition nor ALDialog is available.")
+            self.onReady()
+        except:
+            error = "Language " + lang + " cannot be set."
+            self.logger.warn(error)
+            self.onError(error)]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onSet" type="1" type_size="1" nature="1" inner="0" tooltip="The data is set when a signal is received on this input." id="2" />
+                            <Output name="onReady" type="1" type_size="1" nature="2" inner="0" tooltip="Signal sent when the data has been set." id="3" />
+                            <Output name="onError" type="3" type_size="1" nature="2" inner="0" tooltip="Error output:&#x0A;- triggered if the language asked cannot be set" id="4" />
+                            <Parameter name="Language" inherits_from_parent="0" content_type="3" value="Italian" default_value="English" custom_choice="1" tooltip="Set the language the robot speaks and understands." id="5">
+                                <Choice value="Arabic" />
+                                <Choice value="Brazilian" />
+                                <Choice value="Chinese" />
+                                <Choice value="Czech" />
+                                <Choice value="Danish" />
+                                <Choice value="Dutch" />
+                                <Choice value="English" />
+                                <Choice value="Finnish" />
+                                <Choice value="French" />
+                                <Choice value="German" />
+                                <Choice value="Italian" />
+                                <Choice value="Japanese" />
+                                <Choice value="Korean" />
+                                <Choice value="Polish" />
+                                <Choice value="Portuguese" />
+                                <Choice value="Russian" />
+                                <Choice value="Spanish" />
+                                <Choice value="Swedish" />
+                                <Choice value="Turkish" />
+                            </Parameter>
+                            <Resource name="Speech" type="Lock" timeout="0" />
+                        </Box>
+                        <Box name="Inizio gioco" id="1" localization="8" tooltip="" x="214" y="33">
+                            <dialogFile>../gioco1/gioco1.dlg</dialogFile>
+                            <bitmap>media/images/box/box-dialog.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+                            <Output name="inizioGioco" type="1" type_size="1" nature="2" inner="0" tooltip="" id="5" />
+                        </Box>
+                        <Box name="Random Int. (1)" id="6" localization="8" tooltip="Generate a random integer between a min number and a max number set as&#x0A;parameters.&#x0A;Note that the min and max numbers are included in the range of possible values." x="61" y="273">
+                            <bitmap>media/images/box/box-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[import random
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        # attributes needed in shuffle mode
+        self.nMax = 1
+        self.nMin = 0
+        self.nIndex = self.nMax - self.nMin
+        self.aShuffled = []
+
+    def onUnload(self):
+         #puts code for box cleanup here
+        pass
+
+    def onInput_onStart(self):
+        nMax = self.getParameter("Max value")
+        nMin = self.getParameter("Min value")
+        if( nMin > nMax ):
+            temp = nMin
+            nMin = nMax
+            nMax = temp
+        # if shuffle
+        if( self.getParameter("Shuffle") ):
+            self.nIndex += 1
+            if( self.nIndex > self.nMax - self.nMin or nMax != self.nMax or nMin != self.nMin ):
+                self.nMax = nMax
+                self.nMin = nMin
+                self.nIndex = 0
+                self.aShuffled = []
+                for i in range( nMin, nMax + 1 ):
+                    self.aShuffled.insert( random.randint(0, len(self.aShuffled)), i )
+            self.output_r1( self.aShuffled[self.nIndex] )
+
+        if( self.getParameter("Shuffle") ):
+            self.nIndex += 1
+            if( self.nIndex > self.nMax - self.nMin or nMax != self.nMax or nMin != self.nMin ):
+                self.nMax = nMax
+                self.nMin = nMin
+                self.nIndex = 0
+                self.aShuffled = []
+                for i in range( nMin, nMax + 1 ):
+                    self.aShuffled.insert( random.randint(0, len(self.aShuffled)), i )
+            self.output_r2( self.aShuffled[self.nIndex] )
+
+        if( self.getParameter("Shuffle") ):
+            self.nIndex += 1
+            if( self.nIndex > self.nMax - self.nMin or nMax != self.nMax or nMin != self.nMin ):
+                self.nMax = nMax
+                self.nMin = nMin
+                self.nIndex = 0
+                self.aShuffled = []
+                for i in range( nMin, nMax + 1 ):
+                    self.aShuffled.insert( random.randint(0, len(self.aShuffled)), i )
+            self.output_r3( self.aShuffled[self.nIndex] )
+        # if not shuffle
+        else:
+            self.nIndex = self.nMax - self.nMin
+            self.output_RandomValue( random.randint( nMin, nMax ) )]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="1" inner="0" tooltip="Generate a random integer." id="2" />
+                            <Output name="output_r1" type="2" type_size="1" nature="2" inner="0" tooltip="The random value obtained." id="3" />
+                            <Output name="output_r2" type="2" type_size="1" nature="2" inner="0" tooltip="" id="4" />
+                            <Output name="output_r3" type="2" type_size="1" nature="2" inner="0" tooltip="" id="5" />
+                            <Parameter name="Min value" inherits_from_parent="0" content_type="1" value="1" default_value="0" min="0" max="1000" tooltip="The minimum value you can get." id="6" />
+                            <Parameter name="Max value" inherits_from_parent="0" content_type="1" value="5" default_value="10" min="0" max="1000" tooltip="The maximum number you can get." id="7" />
+                            <Parameter name="Shuffle" inherits_from_parent="0" content_type="0" value="1" default_value="0" tooltip="When this option is selected the box will give all the numbers between min and&#x0A;max before giving the same number twice." id="8" />
+                        </Box>
+                        <Box name="Text Edit" id="3" localization="8" tooltip="Send the text you entered when the input is stimulated." plugin="textedit_plugin" x="402" y="542">
+                            <bitmap>media/images/box/interaction/vocabulary.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("Giocheremo a Mastermind, io penserò a 3 numeri da 1 a 5 e tu dovrai indovinarli. Prova a dire una combinazione di 3 numeri e io ti dirò quanti numeri giusti al posto giusto o quanti numeri giusti al posto sbagliato ci sono. Quando avrai 3 numeri giusti al posto giusto avrai vinto la sfida! Buona fortuna! Ho pensato ai 3 numeri, dimmi il primo numero della combinazione")]]>
+</content>
+                            </script>
+                            <pluginContent>
+                                <text>
+                                    <![CDATA[Giocheremo a Mastermind, io penserò a 3 numeri da 1 a 5 e tu dovrai indovinarli. Prova a dire una combinazione di 3 numeri e io ti dirò quanti numeri giusti al posto giusto o quanti numeri giusti al posto sbagliato ci sono. Quando avrai 3 numeri giusti al posto giusto avrai vinto la sfida! Buona fortuna! Ho pensato ai 3 numeri, dimmi il primo numero della combinazione]]>
+</text>
+                            </pluginContent>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="1" inner="0" tooltip="To send the text on the output." id="2" />
+                            <Output name="onStopped" type="3" type_size="1" nature="2" inner="0" tooltip="The text you entered." id="3" />
+                        </Box>
+                        <Box name="Say Text" id="4" localization="8" tooltip="Say the text received on its input." x="690" y="17">
+                            <bitmap>media/images/box/interaction/say.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[import time
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+        self.tts = ALProxy('ALTextToSpeech')
+        self.ttsStop = ALProxy('ALTextToSpeech', True) #Create another proxy as wait is blocking if audioout is remote
+
+    def onLoad(self):
+        self.bIsRunning = False
+        self.ids = []
+
+    def onUnload(self):
+        for id in self.ids:
+            try:
+                self.ttsStop.stop(id)
+            except:
+                pass
+        while( self.bIsRunning ):
+            time.sleep( 0.2 )
+
+    def onInput_onStart(self, p):
+        self.bIsRunning = True
+        try:
+            sentence = "\RSPD="+ str( self.getParameter("Speed (%)") ) + "\ "
+            sentence += "\VCT="+ str( self.getParameter("Voice shaping (%)") ) + "\ "
+            sentence += str(p)
+            sentence +=  "\RST\ "
+            id = self.tts.post.say(str(sentence))
+            self.ids.append(id)
+            self.tts.wait(id, 0)
+        finally:
+            try:
+                self.ids.remove(id)
+            except:
+                pass
+            if( self.ids == [] ):
+                self.onStopped() # activate output of the box
+                self.bIsRunning = False
+
+    def onInput_onStop(self):
+        self.onUnload()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                            <Input name="onStart" type="3" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this Input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this Input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when Box behavior is finished." id="4" />
+                            <Parameter name="Voice shaping (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="150" tooltip='Used to modify at runtime the voice feature (tone, speed). In a slighty&#x0A;different way than pitch and speed, it gives a kind of &quot;gender or age&#x0A;modification&quot; effect.&#x0A;&#x0A;For instance, a quite good male derivation of female voice can be&#x0A;obtained setting this parameter to 78%.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the&#x0A;speed parameter. For example, if you want to decrease by 20% the voice&#x0A;shaping, you will have to increase by 20% the speed to keep a constant&#x0A;average speed.' id="5" />
+                            <Parameter name="Speed (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="200" tooltip="Changes the speed of the voice.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the voice&#x0A;shaping parameter. For example, if you want to increase by 20% the speed, you&#x0A;will have to decrease by 20% the voice shaping to keep a constant average&#x0A;speed." id="6" />
+                            <Resource name="Speech" type="Lock" timeout="0" />
+                        </Box>
+                        <Box name="Insert Data" id="8" localization="8" tooltip="Stores in NAOqi&apos;s shared memory the given value at the given key." x="233" y="147">
+                            <bitmap>media/images/box/sensors/STM.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        pass
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+
+    def onUnload(self):
+        self.memory = None
+
+    def onInput_onStart(self, p):
+        self.memory.insertData(self.getParameter("key"), p)
+        self.onStopped(p)
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="0" type_size="1" nature="2" inner="0" tooltip="Receives the value to be inserted in ALMemory." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="0" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished. It contains the inserted value in ALMemory." id="4" />
+                            <Output name="onError" type="3" type_size="1" nature="1" inner="0" tooltip="Output when error is raised by the behavior. Contains the error message." id="5" />
+                            <Parameter name="key" inherits_from_parent="0" content_type="3" value="game/n1" default_value="MyApplication/MyData" custom_choice="0" tooltip="" id="6" />
+                        </Box>
+                        <Box name="Insert Data (2)" id="10" localization="8" tooltip="Stores in NAOqi&apos;s shared memory the given value at the given key." x="261" y="262">
+                            <bitmap>media/images/box/sensors/STM.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        pass
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+
+    def onUnload(self):
+        self.memory = None
+
+    def onInput_onStart(self, p):
+        self.memory.insertData(self.getParameter("key"), p)
+        self.onStopped(p)
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="0" type_size="1" nature="2" inner="0" tooltip="Receives the value to be inserted in ALMemory." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="0" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished. It contains the inserted value in ALMemory." id="4" />
+                            <Output name="onError" type="3" type_size="1" nature="1" inner="0" tooltip="Output when error is raised by the behavior. Contains the error message." id="5" />
+                            <Parameter name="key" inherits_from_parent="0" content_type="3" value="game/n2" default_value="MyApplication/MyData" custom_choice="0" tooltip="" id="6" />
+                        </Box>
+                        <Box name="Insert Data (3)" id="12" localization="8" tooltip="Stores in NAOqi&apos;s shared memory the given value at the given key." x="265" y="394">
+                            <bitmap>media/images/box/sensors/STM.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        pass
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+
+    def onUnload(self):
+        self.memory = None
+
+    def onInput_onStart(self, p):
+        self.memory.insertData(self.getParameter("key"), p)
+        self.onStopped(p)
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="0" type_size="1" nature="2" inner="0" tooltip="Receives the value to be inserted in ALMemory." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="0" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished. It contains the inserted value in ALMemory." id="4" />
+                            <Output name="onError" type="3" type_size="1" nature="1" inner="0" tooltip="Output when error is raised by the behavior. Contains the error message." id="5" />
+                            <Parameter name="key" inherits_from_parent="0" content_type="3" value="game/n3" default_value="MyApplication/MyData" custom_choice="0" tooltip="" id="6" />
+                        </Box>
+                        <Box name="InputNumeri" id="9" localization="8" tooltip="" x="673" y="262">
+                            <dialogFile>../InputNumber/InputNumber.dlg</dialogFile>
+                            <bitmap>media/images/box/box-dialog.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+                            <Output name="Ni1" type="2" type_size="1" nature="2" inner="0" tooltip="" id="5" />
+                            <Output name="Ni2" type="2" type_size="1" nature="2" inner="0" tooltip="" id="6" />
+                            <Output name="Ni3" type="2" type_size="1" nature="2" inner="0" tooltip="" id="7" />
+                            <Output name="fine" type="1" type_size="1" nature="2" inner="0" tooltip="" id="8" />
+                        </Box>
+                        <Box name="If" id="15" localization="8" tooltip="Test a condition and stimulate the then or else outputs depending on the boolean&#x0A;value of the condition.&#x0A;The condition can be set in parameters." x="842" y="165">
+                            <bitmap>media/images/box/box-diagram.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+        pass
+
+    def onUnload(self):
+        self.memory = None
+        pass
+
+    def onInput_onData(self, p):
+        n1 = self.memory.getData(self.getParameter("n1"))
+        n1 = float(n1)
+        n2 = self.memory.getData(self.getParameter("n2"))
+        n2 = float(n2)
+        n3 = self.memory.getData(self.getParameter("n3"))
+        n3 = float(n3)
+        p = float(p)
+        if(p == n1):
+            self.output_giusto()
+        else:
+            if(p == n2):
+                self.output_ok()
+            else:
+                if(p == n3):
+                    self.output_ok()
+                else:
+                    self.output_no()
+
+    def onInput_onStop(self):
+        self.onUnload() #it is recommended to reuse the clean-up as the box is stopped]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onData" type="0" type_size="1" nature="1" inner="0" tooltip="The data to test." id="2" />
+                            <Output name="output_giusto" type="1" type_size="1" nature="2" inner="0" tooltip="giusto posto giusto" id="3" />
+                            <Output name="output_ok" type="1" type_size="1" nature="2" inner="0" tooltip="Giusto posto sbagliato" id="4" />
+                            <Output name="output_no" type="1" type_size="1" nature="2" inner="0" tooltip="No" id="5" />
+                            <Parameter name="n1" inherits_from_parent="0" content_type="3" value="game/n1" default_value="game/n1" custom_choice="0" tooltip="" id="6" />
+                            <Parameter name="n2" inherits_from_parent="0" content_type="3" value="game/n2" default_value="game/n2" custom_choice="0" tooltip="" id="7" />
+                            <Parameter name="n3" inherits_from_parent="0" content_type="3" value="game/n3" default_value="game/n3" custom_choice="0" tooltip="" id="8" />
+                        </Box>
+                        <Box name="Insert Data (6)" id="16" localization="8" tooltip="Stores in NAOqi&apos;s shared memory the given value at the given key." x="522" y="152">
+                            <bitmap>media/images/box/sensors/STM.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        pass
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+
+    def onUnload(self):
+        self.memory = None
+
+    def onInput_onStart(self, p):
+        self.memory.insertData(self.getParameter("key"), p)
+        self.onStopped(p)
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="0" type_size="1" nature="2" inner="0" tooltip="Receives the value to be inserted in ALMemory." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="0" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished. It contains the inserted value in ALMemory." id="4" />
+                            <Output name="onError" type="3" type_size="1" nature="1" inner="0" tooltip="Output when error is raised by the behavior. Contains the error message." id="5" />
+                            <Parameter name="key" inherits_from_parent="0" content_type="3" value="game/giusti" default_value="MyApplication/MyData" custom_choice="0" tooltip="" id="6" />
+                        </Box>
+                        <Box name="Insert Data (7)" id="18" localization="8" tooltip="Stores in NAOqi&apos;s shared memory the given value at the given key." x="530" y="387">
+                            <bitmap>media/images/box/sensors/STM.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        pass
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+
+    def onUnload(self):
+        self.memory = None
+
+    def onInput_onStart(self, p):
+        self.memory.insertData(self.getParameter("key"), p)
+        self.onStopped(p)
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="0" type_size="1" nature="2" inner="0" tooltip="Receives the value to be inserted in ALMemory." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="0" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished. It contains the inserted value in ALMemory." id="4" />
+                            <Output name="onError" type="3" type_size="1" nature="1" inner="0" tooltip="Output when error is raised by the behavior. Contains the error message." id="5" />
+                            <Parameter name="key" inherits_from_parent="0" content_type="3" value="game/ok" default_value="MyApplication/MyData" custom_choice="0" tooltip="" id="6" />
+                        </Box>
+                        <Box name="Number Edit" id="19" localization="8" tooltip="Send the number you entered when the input is stimulated." plugin="numberedit_plugin" x="449" y="280">
+                            <bitmap>media/images/box/interaction/vocabulary.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped(0)]]>
+</content>
+                            </script>
+                            <pluginContent>
+                                <number>0</number>
+                            </pluginContent>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="1" inner="0" tooltip="To send the number on the output." id="2" />
+                            <Output name="onStopped" type="2" type_size="1" nature="2" inner="0" tooltip="The number you entered." id="3" />
+                        </Box>
+                        <Box name="If (1)" id="11" localization="8" tooltip="Test a condition and stimulate the then or else outputs depending on the boolean&#x0A;value of the condition.&#x0A;The condition can be set in parameters." x="842" y="314">
+                            <bitmap>media/images/box/box-diagram.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+        pass
+
+    def onUnload(self):
+        self.memory = None
+        pass
+
+    def onInput_onData(self, p):
+        n1 = self.memory.getData(self.getParameter("n1"))
+        n1 = float(n1)
+        n2 = self.memory.getData(self.getParameter("n2"))
+        n2 = float(n2)
+        n3 = self.memory.getData(self.getParameter("n3"))
+        n3 = float(n3)
+        p = float(p)
+        if(p == n2):
+            self.output_giusto()
+        else:
+            if(p == n1):
+                self.output_ok()
+            else:
+                if(p == n3):
+                    self.output_ok()
+                else:
+                    self.output_no()
+    def onInput_onStop(self):
+        self.onUnload() #it is recommended to reuse the clean-up as the box is stopped]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onData" type="0" type_size="1" nature="1" inner="0" tooltip="The data to test." id="2" />
+                            <Output name="output_giusto" type="1" type_size="1" nature="2" inner="0" tooltip="giusto posto giusto" id="3" />
+                            <Output name="output_ok" type="1" type_size="1" nature="2" inner="0" tooltip="Giusto posto sbagliato" id="4" />
+                            <Output name="output_no" type="1" type_size="1" nature="2" inner="0" tooltip="No" id="5" />
+                            <Parameter name="n1" inherits_from_parent="0" content_type="3" value="game/n1" default_value="game/n1" custom_choice="0" tooltip="" id="6" />
+                            <Parameter name="n2" inherits_from_parent="0" content_type="3" value="game/n2" default_value="game/n2" custom_choice="0" tooltip="" id="7" />
+                            <Parameter name="n3" inherits_from_parent="0" content_type="3" value="game/n3" default_value="game/n3" custom_choice="0" tooltip="" id="8" />
+                        </Box>
+                        <Box name="If (2)" id="13" localization="8" tooltip="Test a condition and stimulate the then or else outputs depending on the boolean&#x0A;value of the condition.&#x0A;The condition can be set in parameters." x="826" y="467">
+                            <bitmap>media/images/box/box-diagram.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+        pass
+
+    def onUnload(self):
+        self.memory = None
+        pass
+
+    def onInput_onData(self, p):
+        n1 = self.memory.getData(self.getParameter("n1"))
+        n1 = float(n1)
+        n2 = self.memory.getData(self.getParameter("n2"))
+        n2 = float(n2)
+        n3 = self.memory.getData(self.getParameter("n3"))
+        n3 = float(n3)
+        p = float(p)
+        if(p == n3):
+            self.output_giusto()
+        else:
+            if(p == n1):
+                self.output_ok()
+            else:
+                if(p == n2):
+                    self.output_ok()
+                else:
+                    self.output_no()
+    def onInput_onStop(self):
+        self.onUnload() #it is recommended to reuse the clean-up as the box is stopped]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onData" type="0" type_size="1" nature="1" inner="0" tooltip="The data to test." id="2" />
+                            <Output name="output_giusto" type="1" type_size="1" nature="2" inner="0" tooltip="giusto posto giusto" id="3" />
+                            <Output name="output_ok" type="1" type_size="1" nature="2" inner="0" tooltip="Giusto posto sbagliato" id="4" />
+                            <Output name="output_no" type="1" type_size="1" nature="2" inner="0" tooltip="No" id="5" />
+                            <Parameter name="n1" inherits_from_parent="0" content_type="3" value="game/n1" default_value="game/n1" custom_choice="0" tooltip="" id="6" />
+                            <Parameter name="n2" inherits_from_parent="0" content_type="3" value="game/n2" default_value="game/n2" custom_choice="0" tooltip="" id="7" />
+                            <Parameter name="n3" inherits_from_parent="0" content_type="3" value="game/n3" default_value="game/n3" custom_choice="0" tooltip="" id="8" />
+                        </Box>
+                        <Box name="GiustiPlusOne" id="14" localization="8" tooltip="" x="1013" y="150">
+                            <bitmap>media/images/box/box-python-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+        pass
+
+    def onUnload(self):
+        self.memory = None
+        pass
+
+    def onInput_onStart(self):
+        ngiusti = self.memory.getData("game/giusti")
+        ngiusti = float(ngiusti)
+        ngiusti = ngiusti + 1
+        self.memory.insertData("game/giusti", ngiusti)
+        self.onStopped()
+        pass
+
+    def onInput_onStop(self):
+        self.onUnload() #it is recommended to reuse the clean-up as the box is stopped
+        self.onStopped() #activate the output of the box]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+                        </Box>
+                        <Box name="OkPlusOne" id="17" localization="8" tooltip="" x="1022" y="467">
+                            <bitmap>media/images/box/box-python-script.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+        pass
+
+    def onUnload(self):
+        self.memory = None
+        pass
+
+    def onInput_onStart(self):
+        ngiusti = self.memory.getData("game/ok")
+        ngiusti = float(ngiusti)
+        ngiusti = ngiusti + 1
+        self.memory.insertData("game/ok", ngiusti)
+        self.onStopped()
+        pass
+
+    def onInput_onStop(self):
+        self.onUnload() #it is recommended to reuse the clean-up as the box is stopped
+        self.onStopped() #activate the output of the box]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+                        </Box>
+                        <Box name="Say Text (1)" id="20" localization="8" tooltip="Say the text received on its input." x="1249" y="16">
+                            <bitmap>media/images/box/interaction/say.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[import time
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+        self.tts = ALProxy('ALTextToSpeech')
+        self.ttsStop = ALProxy('ALTextToSpeech', True) #Create another proxy as wait is blocking if audioout is remote
+
+    def onLoad(self):
+        self.bIsRunning = False
+        self.ids = []
+
+    def onUnload(self):
+        for id in self.ids:
+            try:
+                self.ttsStop.stop(id)
+            except:
+                pass
+        while( self.bIsRunning ):
+            time.sleep( 0.2 )
+
+    def onInput_onStart(self, p):
+        self.bIsRunning = True
+        try:
+            sentence = "\RSPD="+ str( self.getParameter("Speed (%)") ) + "\ "
+            sentence += "\VCT="+ str( self.getParameter("Voice shaping (%)") ) + "\ "
+            sentence += str(p)
+            sentence +=  "\RST\ "
+            id = self.tts.post.say(str(sentence))
+            self.ids.append(id)
+            self.tts.wait(id, 0)
+        finally:
+            try:
+                self.ids.remove(id)
+            except:
+                pass
+            if( self.ids == [] ):
+                self.onStopped() # activate output of the box
+                self.bIsRunning = False
+
+    def onInput_onStop(self):
+        self.onUnload()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                            <Input name="onStart" type="3" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this Input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this Input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when Box behavior is finished." id="4" />
+                            <Parameter name="Voice shaping (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="150" tooltip='Used to modify at runtime the voice feature (tone, speed). In a slighty&#x0A;different way than pitch and speed, it gives a kind of &quot;gender or age&#x0A;modification&quot; effect.&#x0A;&#x0A;For instance, a quite good male derivation of female voice can be&#x0A;obtained setting this parameter to 78%.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the&#x0A;speed parameter. For example, if you want to decrease by 20% the voice&#x0A;shaping, you will have to increase by 20% the speed to keep a constant&#x0A;average speed.' id="5" />
+                            <Parameter name="Speed (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="200" tooltip="Changes the speed of the voice.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the voice&#x0A;shaping parameter. For example, if you want to increase by 20% the speed, you&#x0A;will have to decrease by 20% the voice shaping to keep a constant average&#x0A;speed." id="6" />
+                            <Resource name="Speech" type="Lock" timeout="0" />
+                        </Box>
+                        <Box name="Get Data" id="21" localization="8" tooltip="Retrieves from NAOqi&apos;s shared memory the given value at the given key." x="1085" y="25">
+                            <bitmap>media/images/box/sensors/STM.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        pass
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+
+    def onUnload(self):
+        self.memory = None
+
+    def onInput_onStart(self):
+        result = self.memory.getData(self.getParameter("key"))
+        self.onStopped(result)
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="0" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished. It contains the retrieved value from ALMemory." id="4" />
+                            <Output name="onError" type="3" type_size="1" nature="1" inner="0" tooltip="Output when error is raised by the behavior. Contains the error message." id="5" />
+                            <Parameter name="key" inherits_from_parent="0" content_type="3" value="game/giusti" default_value="MyApplication/MyData" custom_choice="0" tooltip="" id="6" />
+                        </Box>
+                        <Box name="Get Data (1)" id="22" localization="8" tooltip="Retrieves from NAOqi&apos;s shared memory the given value at the given key." x="1395" y="264">
+                            <bitmap>media/images/box/sensors/STM.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        pass
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+
+    def onUnload(self):
+        self.memory = None
+
+    def onInput_onStart(self):
+        result = self.memory.getData(self.getParameter("key"))
+        self.onStopped(result)
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="0" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished. It contains the retrieved value from ALMemory." id="4" />
+                            <Output name="onError" type="3" type_size="1" nature="1" inner="0" tooltip="Output when error is raised by the behavior. Contains the error message." id="5" />
+                            <Parameter name="key" inherits_from_parent="0" content_type="3" value="game/ok" default_value="MyApplication/MyData" custom_choice="0" tooltip="" id="6" />
+                        </Box>
+                        <Box name="Text Edit (1)" id="23" localization="8" tooltip="Send the text you entered when the input is stimulated." plugin="textedit_plugin" x="1190" y="214">
+                            <bitmap>media/images/box/interaction/vocabulary.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("Numeri giusti al posto giusto.")]]>
+</content>
+                            </script>
+                            <pluginContent>
+                                <text>
+                                    <![CDATA[Numeri giusti al posto giusto.]]>
+</text>
+                            </pluginContent>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="1" inner="0" tooltip="To send the text on the output." id="2" />
+                            <Output name="onStopped" type="3" type_size="1" nature="2" inner="0" tooltip="The text you entered." id="3" />
+                        </Box>
+                        <Box name="Say Text (2)" id="24" localization="8" tooltip="Say the text received on its input." x="1346" y="132">
+                            <bitmap>media/images/box/interaction/say.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[import time
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+        self.tts = ALProxy('ALTextToSpeech')
+        self.ttsStop = ALProxy('ALTextToSpeech', True) #Create another proxy as wait is blocking if audioout is remote
+
+    def onLoad(self):
+        self.bIsRunning = False
+        self.ids = []
+
+    def onUnload(self):
+        for id in self.ids:
+            try:
+                self.ttsStop.stop(id)
+            except:
+                pass
+        while( self.bIsRunning ):
+            time.sleep( 0.2 )
+
+    def onInput_onStart(self, p):
+        self.bIsRunning = True
+        try:
+            sentence = "\RSPD="+ str( self.getParameter("Speed (%)") ) + "\ "
+            sentence += "\VCT="+ str( self.getParameter("Voice shaping (%)") ) + "\ "
+            sentence += str(p)
+            sentence +=  "\RST\ "
+            id = self.tts.post.say(str(sentence))
+            self.ids.append(id)
+            self.tts.wait(id, 0)
+        finally:
+            try:
+                self.ids.remove(id)
+            except:
+                pass
+            if( self.ids == [] ):
+                self.onStopped() # activate output of the box
+                self.bIsRunning = False
+
+    def onInput_onStop(self):
+        self.onUnload()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                            <Input name="onStart" type="3" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this Input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this Input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when Box behavior is finished." id="4" />
+                            <Parameter name="Voice shaping (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="150" tooltip='Used to modify at runtime the voice feature (tone, speed). In a slighty&#x0A;different way than pitch and speed, it gives a kind of &quot;gender or age&#x0A;modification&quot; effect.&#x0A;&#x0A;For instance, a quite good male derivation of female voice can be&#x0A;obtained setting this parameter to 78%.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the&#x0A;speed parameter. For example, if you want to decrease by 20% the voice&#x0A;shaping, you will have to increase by 20% the speed to keep a constant&#x0A;average speed.' id="5" />
+                            <Parameter name="Speed (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="200" tooltip="Changes the speed of the voice.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the voice&#x0A;shaping parameter. For example, if you want to increase by 20% the speed, you&#x0A;will have to decrease by 20% the voice shaping to keep a constant average&#x0A;speed." id="6" />
+                            <Resource name="Speech" type="Lock" timeout="0" />
+                        </Box>
+                        <Box name="Text Edit (2)" id="25" localization="8" tooltip="Send the text you entered when the input is stimulated." plugin="textedit_plugin" x="1220" y="502">
+                            <bitmap>media/images/box/interaction/vocabulary.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("Numeri giusti al posto sbagliato.")]]>
+</content>
+                            </script>
+                            <pluginContent>
+                                <text>
+                                    <![CDATA[Numeri giusti al posto sbagliato.]]>
+</text>
+                            </pluginContent>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="1" inner="0" tooltip="To send the text on the output." id="2" />
+                            <Output name="onStopped" type="3" type_size="1" nature="2" inner="0" tooltip="The text you entered." id="3" />
+                        </Box>
+                        <Box name="Say Text (3)" id="26" localization="8" tooltip="Say the text received on its input." x="1378" y="366">
+                            <bitmap>media/images/box/interaction/say.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[import time
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+        self.tts = ALProxy('ALTextToSpeech')
+        self.ttsStop = ALProxy('ALTextToSpeech', True) #Create another proxy as wait is blocking if audioout is remote
+
+    def onLoad(self):
+        self.bIsRunning = False
+        self.ids = []
+
+    def onUnload(self):
+        for id in self.ids:
+            try:
+                self.ttsStop.stop(id)
+            except:
+                pass
+        while( self.bIsRunning ):
+            time.sleep( 0.2 )
+
+    def onInput_onStart(self, p):
+        self.bIsRunning = True
+        try:
+            sentence = "\RSPD="+ str( self.getParameter("Speed (%)") ) + "\ "
+            sentence += "\VCT="+ str( self.getParameter("Voice shaping (%)") ) + "\ "
+            sentence += str(p)
+            sentence +=  "\RST\ "
+            id = self.tts.post.say(str(sentence))
+            self.ids.append(id)
+            self.tts.wait(id, 0)
+        finally:
+            try:
+                self.ids.remove(id)
+            except:
+                pass
+            if( self.ids == [] ):
+                self.onStopped() # activate output of the box
+                self.bIsRunning = False
+
+    def onInput_onStop(self):
+        self.onUnload()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                            <Input name="onStart" type="3" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this Input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this Input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when Box behavior is finished." id="4" />
+                            <Parameter name="Voice shaping (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="150" tooltip='Used to modify at runtime the voice feature (tone, speed). In a slighty&#x0A;different way than pitch and speed, it gives a kind of &quot;gender or age&#x0A;modification&quot; effect.&#x0A;&#x0A;For instance, a quite good male derivation of female voice can be&#x0A;obtained setting this parameter to 78%.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the&#x0A;speed parameter. For example, if you want to decrease by 20% the voice&#x0A;shaping, you will have to increase by 20% the speed to keep a constant&#x0A;average speed.' id="5" />
+                            <Parameter name="Speed (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="200" tooltip="Changes the speed of the voice.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the voice&#x0A;shaping parameter. For example, if you want to increase by 20% the speed, you&#x0A;will have to decrease by 20% the voice shaping to keep a constant average&#x0A;speed." id="6" />
+                            <Resource name="Speech" type="Lock" timeout="0" />
+                        </Box>
+                        <Box name="Say Text (4)" id="27" localization="8" tooltip="Say the text received on its input." x="1183" y="317">
+                            <bitmap>media/images/box/interaction/say.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[import time
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+        self.tts = ALProxy('ALTextToSpeech')
+        self.ttsStop = ALProxy('ALTextToSpeech', True) #Create another proxy as wait is blocking if audioout is remote
+
+    def onLoad(self):
+        self.bIsRunning = False
+        self.ids = []
+
+    def onUnload(self):
+        for id in self.ids:
+            try:
+                self.ttsStop.stop(id)
+            except:
+                pass
+        while( self.bIsRunning ):
+            time.sleep( 0.2 )
+
+    def onInput_onStart(self, p):
+        self.bIsRunning = True
+        try:
+            sentence = "\RSPD="+ str( self.getParameter("Speed (%)") ) + "\ "
+            sentence += "\VCT="+ str( self.getParameter("Voice shaping (%)") ) + "\ "
+            sentence += str(p)
+            sentence +=  "\RST\ "
+            id = self.tts.post.say(str(sentence))
+            self.ids.append(id)
+            self.tts.wait(id, 0)
+        finally:
+            try:
+                self.ids.remove(id)
+            except:
+                pass
+            if( self.ids == [] ):
+                self.onStopped() # activate output of the box
+                self.bIsRunning = False
+
+    def onInput_onStop(self):
+        self.onUnload()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                            <Input name="onStart" type="3" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this Input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this Input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when Box behavior is finished." id="4" />
+                            <Parameter name="Voice shaping (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="150" tooltip='Used to modify at runtime the voice feature (tone, speed). In a slighty&#x0A;different way than pitch and speed, it gives a kind of &quot;gender or age&#x0A;modification&quot; effect.&#x0A;&#x0A;For instance, a quite good male derivation of female voice can be&#x0A;obtained setting this parameter to 78%.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the&#x0A;speed parameter. For example, if you want to decrease by 20% the voice&#x0A;shaping, you will have to increase by 20% the speed to keep a constant&#x0A;average speed.' id="5" />
+                            <Parameter name="Speed (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="200" tooltip="Changes the speed of the voice.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the voice&#x0A;shaping parameter. For example, if you want to increase by 20% the speed, you&#x0A;will have to decrease by 20% the voice shaping to keep a constant average&#x0A;speed." id="6" />
+                            <Resource name="Speech" type="Lock" timeout="0" />
+                        </Box>
+                        <Box name="WakeUp" id="5" localization="0" tooltip="Call a Wake Up process.&#x0A;Stiff all joints and apply stand Init posture if the robot is Stand" x="115" y="164">
+                            <bitmap>media/images/box/movement/stiffness.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        pass
+
+    def onLoad(self):
+        self.motion = ALProxy("ALMotion")
+        pass
+
+    def onUnload(self):
+        pass
+
+    def onInput_onStart(self):
+        self.motion.wakeUp()
+        self.onStopped() #~ activate output of the box
+        pass
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+                            <Resource name="All motors" type="Lock" timeout="0" />
+                            <Resource name="Stiffness" type="Lock" timeout="0" />
+                        </Box>
+                        <Box name="If (3)" id="7" localization="8" tooltip="Test a condition and stimulate the then or else outputs depending on the boolean&#x0A;value of the condition.&#x0A;The condition can be set in parameters." x="1594" y="459">
+                            <bitmap>media/images/box/box-diagram.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        pass
+
+    def onUnload(self):
+        #~ puts code for box cleanup here
+        pass
+
+    def onInput_onData(self, p):
+        param = self.getParameter("Value to compare")
+        try:
+            p = float(p)
+            param = float(param)
+        except:
+            p = str(p)
+            param = str(param)
+        operator = self.getParameter("Condition operator")
+        if( operator == "<" ):
+            self.outputTrueOrFalse( p < param )
+        elif( operator == "< or =" ):
+            self.outputTrueOrFalse( p <= param )
+        elif( operator == "=" ):
+            self.outputTrueOrFalse( p == param )
+        elif( operator == "> or =" ):
+            self.outputTrueOrFalse( p >= param )
+        elif( operator == ">" ):
+            self.outputTrueOrFalse( p > param )
+        elif( operator == "≠" ):
+            self.outputTrueOrFalse( p != param )
+        else:
+            raise Exception( "Operator not known: " + str(operator) )
+
+    def outputTrueOrFalse(self, condition):
+        if( condition ):
+            self.output_then()
+        else:
+            self.output_else()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onData" type="0" type_size="1" nature="1" inner="0" tooltip="The data to test." id="2" />
+                            <Output name="output_then" type="1" type_size="1" nature="2" inner="0" tooltip="Signal sent if the condition is true." id="3" />
+                            <Output name="output_else" type="1" type_size="1" nature="2" inner="0" tooltip="Signal sent if the condition is false." id="4" />
+                            <Parameter name="Condition operator" inherits_from_parent="0" content_type="3" value="=" default_value="≠" custom_choice="0" tooltip='Choose the condition operator.&#x0A;&#x0A;For example:&#x0A;If you choose &quot;&gt; or =&quot;, the condition will be: is the input is higher or equal&#x0A;than the parameter?' id="5">
+                                <Choice value="&lt;" />
+                                <Choice value="&lt; or =" />
+                                <Choice value="=" />
+                                <Choice value="&gt; or =" />
+                                <Choice value="&gt;" />
+                                <Choice value="≠" />
+                            </Parameter>
+                            <Parameter name="Value to compare" inherits_from_parent="0" content_type="3" value="3" default_value="0" custom_choice="0" tooltip="This is the value which is compared to the input value." id="6" />
+                        </Box>
+                        <Box name="Get Data (2)" id="28" localization="8" tooltip="Retrieves from NAOqi&apos;s shared memory the given value at the given key." x="1617" y="577">
+                            <bitmap>media/images/box/sensors/STM.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        pass
+
+    def onLoad(self):
+        self.memory = ALProxy("ALMemory")
+
+    def onUnload(self):
+        self.memory = None
+
+    def onInput_onStart(self):
+        result = self.memory.getData(self.getParameter("key"))
+        self.onStopped(result)
+
+    def onInput_onStop(self):
+        self.onUnload() #~ it is recommended to call onUnload of this box in a onStop method, as the code written in onUnload is used to stop the box as well
+        pass]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="0" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished. It contains the retrieved value from ALMemory." id="4" />
+                            <Output name="onError" type="3" type_size="1" nature="1" inner="0" tooltip="Output when error is raised by the behavior. Contains the error message." id="5" />
+                            <Parameter name="key" inherits_from_parent="0" content_type="3" value="game/giusti" default_value="MyApplication/MyData" custom_choice="0" tooltip="" id="6" />
+                        </Box>
+                        <Box name="Say Text (5)" id="29" localization="8" tooltip="Say the text received on its input." x="1900" y="331">
+                            <bitmap>media/images/box/interaction/say.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[import time
+
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+        self.tts = ALProxy('ALTextToSpeech')
+        self.ttsStop = ALProxy('ALTextToSpeech', True) #Create another proxy as wait is blocking if audioout is remote
+
+    def onLoad(self):
+        self.bIsRunning = False
+        self.ids = []
+
+    def onUnload(self):
+        for id in self.ids:
+            try:
+                self.ttsStop.stop(id)
+            except:
+                pass
+        while( self.bIsRunning ):
+            time.sleep( 0.2 )
+
+    def onInput_onStart(self, p):
+        self.bIsRunning = True
+        try:
+            sentence = "\RSPD="+ str( self.getParameter("Speed (%)") ) + "\ "
+            sentence += "\VCT="+ str( self.getParameter("Voice shaping (%)") ) + "\ "
+            sentence += str(p)
+            sentence +=  "\RST\ "
+            id = self.tts.post.say(str(sentence))
+            self.ids.append(id)
+            self.tts.wait(id, 0)
+        finally:
+            try:
+                self.ids.remove(id)
+            except:
+                pass
+            if( self.ids == [] ):
+                self.onStopped() # activate output of the box
+                self.bIsRunning = False
+
+    def onInput_onStop(self):
+        self.onUnload()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                            <Input name="onStart" type="3" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this Input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this Input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when Box behavior is finished." id="4" />
+                            <Parameter name="Voice shaping (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="150" tooltip='Used to modify at runtime the voice feature (tone, speed). In a slighty&#x0A;different way than pitch and speed, it gives a kind of &quot;gender or age&#x0A;modification&quot; effect.&#x0A;&#x0A;For instance, a quite good male derivation of female voice can be&#x0A;obtained setting this parameter to 78%.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the&#x0A;speed parameter. For example, if you want to decrease by 20% the voice&#x0A;shaping, you will have to increase by 20% the speed to keep a constant&#x0A;average speed.' id="5" />
+                            <Parameter name="Speed (%)" inherits_from_parent="1" content_type="1" value="100" default_value="100" min="50" max="200" tooltip="Changes the speed of the voice.&#x0A;&#x0A;Note: For a better effect, you can compensate this parameter with the voice&#x0A;shaping parameter. For example, if you want to increase by 20% the speed, you&#x0A;will have to decrease by 20% the voice shaping to keep a constant average&#x0A;speed." id="6" />
+                            <Resource name="Speech" type="Lock" timeout="0" />
+                        </Box>
+                        <Box name="Text Edit (3)" id="30" localization="8" tooltip="Send the text you entered when the input is stimulated." plugin="textedit_plugin" x="1652" y="318">
+                            <bitmap>media/images/box/interaction/vocabulary.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("Hai vinto!")]]>
+</content>
+                            </script>
+                            <pluginContent>
+                                <text>
+                                    <![CDATA[Hai vinto!]]>
+</text>
+                            </pluginContent>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="1" inner="0" tooltip="To send the text on the output." id="2" />
+                            <Output name="onStopped" type="3" type_size="1" nature="2" inner="0" tooltip="The text you entered." id="3" />
+                        </Box>
+                        <Box name="Wait" id="31" localization="8" tooltip="Wait a moment before sending a signal on the output. &#x0A;Can be stopped anytime. &#x0A;Stimulating the input again before output is activated restarts the waiting period.&#x0A;" x="896" y="35">
+                            <bitmap>media/images/box/wait.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        self.waiting = None
+
+    def onUnload(self):
+        self.cancelWaiting()
+
+    def triggerOutput(self):
+        self.timerOutput()
+
+    def cancelWaiting(self):
+        if self.waiting:
+            self.waiting.cancel()
+        self.waiting = None
+
+    def onInput_onStart(self):
+        self.cancelWaiting()
+        import qi
+        self.waiting = qi.async(self.triggerOutput, delay=int(self.getParameter("Timeout (s)") * 1000 * 1000))
+
+    def onInput_onStop(self):
+        if self.getParameter("Trigger timerOutput if cancelled") and self.waiting and self.waiting.isRunning():
+            self.timerOutput()
+        self.onUnload()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Start the Wait box with the configured timeout value." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Stop the wait and stimulate the output." id="3" />
+                            <Output name="timerOutput" type="1" type_size="1" nature="1" inner="0" tooltip="Send a bang once time set in parameters is elapsed, or if the box is stopped and the appropriate parameter is set." id="4" />
+                            <Parameter name="Timeout (s)" inherits_from_parent="0" content_type="2" value="1.5" default_value="1" min="0" max="5000" tooltip="Duration the box waits before stimulating the output." id="5" />
+                            <Parameter name="Trigger timerOutput if cancelled" inherits_from_parent="0" content_type="0" value="0" default_value="1" tooltip="If the box is currently waiting and cancelled, output will be stimulated." id="6" />
+                        </Box>
+                        <Box name="Wait (1)" id="32" localization="8" tooltip="Wait a moment before sending a signal on the output. &#x0A;Can be stopped anytime. &#x0A;Stimulating the input again before output is activated restarts the waiting period.&#x0A;" x="1471" y="506">
+                            <bitmap>media/images/box/wait.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        self.waiting = None
+
+    def onUnload(self):
+        self.cancelWaiting()
+
+    def triggerOutput(self):
+        self.timerOutput()
+
+    def cancelWaiting(self):
+        if self.waiting:
+            self.waiting.cancel()
+        self.waiting = None
+
+    def onInput_onStart(self):
+        self.cancelWaiting()
+        import qi
+        self.waiting = qi.async(self.triggerOutput, delay=int(self.getParameter("Timeout (s)") * 1000 * 1000))
+
+    def onInput_onStop(self):
+        if self.getParameter("Trigger timerOutput if cancelled") and self.waiting and self.waiting.isRunning():
+            self.timerOutput()
+        self.onUnload()]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Start the Wait box with the configured timeout value." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Stop the wait and stimulate the output." id="3" />
+                            <Output name="timerOutput" type="1" type_size="1" nature="1" inner="0" tooltip="Send a bang once time set in parameters is elapsed, or if the box is stopped and the appropriate parameter is set." id="4" />
+                            <Parameter name="Timeout (s)" inherits_from_parent="0" content_type="2" value="1" default_value="1" min="0" max="5000" tooltip="Duration the box waits before stimulating the output." id="5" />
+                            <Parameter name="Trigger timerOutput if cancelled" inherits_from_parent="0" content_type="0" value="0" default_value="1" tooltip="If the box is currently waiting and cancelled, output will be stimulated." id="6" />
+                        </Box>
+                        <Link inputowner="1" indexofinput="2" outputowner="2" indexofoutput="3" />
+                        <Link inputowner="6" indexofinput="2" outputowner="1" indexofoutput="5" />
+                        <Link inputowner="4" indexofinput="2" outputowner="3" indexofoutput="3" />
+                        <Link inputowner="3" indexofinput="2" outputowner="1" indexofoutput="5" />
+                        <Link inputowner="16" indexofinput="2" outputowner="19" indexofoutput="3" />
+                        <Link inputowner="18" indexofinput="2" outputowner="19" indexofoutput="3" />
+                        <Link inputowner="8" indexofinput="2" outputowner="6" indexofoutput="3" />
+                        <Link inputowner="14" indexofinput="2" outputowner="15" indexofoutput="3" />
+                        <Link inputowner="17" indexofinput="2" outputowner="15" indexofoutput="4" />
+                        <Link inputowner="14" indexofinput="2" outputowner="11" indexofoutput="3" />
+                        <Link inputowner="17" indexofinput="2" outputowner="11" indexofoutput="4" />
+                        <Link inputowner="14" indexofinput="2" outputowner="13" indexofoutput="3" />
+                        <Link inputowner="17" indexofinput="2" outputowner="13" indexofoutput="4" />
+                        <Link inputowner="19" indexofinput="2" outputowner="4" indexofoutput="4" />
+                        <Link inputowner="20" indexofinput="2" outputowner="21" indexofoutput="4" />
+                        <Link inputowner="9" indexofinput="2" outputowner="4" indexofoutput="4" />
+                        <Link inputowner="15" indexofinput="2" outputowner="9" indexofoutput="5" />
+                        <Link inputowner="11" indexofinput="2" outputowner="9" indexofoutput="6" />
+                        <Link inputowner="13" indexofinput="2" outputowner="9" indexofoutput="7" />
+                        <Link inputowner="23" indexofinput="2" outputowner="20" indexofoutput="4" />
+                        <Link inputowner="24" indexofinput="2" outputowner="23" indexofoutput="3" />
+                        <Link inputowner="27" indexofinput="2" outputowner="22" indexofoutput="4" />
+                        <Link inputowner="25" indexofinput="2" outputowner="27" indexofoutput="4" />
+                        <Link inputowner="26" indexofinput="2" outputowner="25" indexofoutput="3" />
+                        <Link inputowner="22" indexofinput="2" outputowner="24" indexofoutput="4" />
+                        <Link inputowner="10" indexofinput="2" outputowner="6" indexofoutput="4" />
+                        <Link inputowner="12" indexofinput="2" outputowner="6" indexofoutput="5" />
+                        <Link inputowner="5" indexofinput="2" outputowner="0" indexofoutput="2" />
+                        <Link inputowner="2" indexofinput="2" outputowner="5" indexofoutput="4" />
+                        <Link inputowner="9" indexofinput="2" outputowner="7" indexofoutput="4" />
+                        <Link inputowner="30" indexofinput="2" outputowner="7" indexofoutput="3" />
+                        <Link inputowner="29" indexofinput="2" outputowner="30" indexofoutput="3" />
+                        <Link inputowner="0" indexofinput="4" outputowner="29" indexofoutput="4" />
+                        <Link inputowner="19" indexofinput="2" outputowner="7" indexofoutput="4" />
+                        <Link inputowner="31" indexofinput="2" outputowner="9" indexofoutput="8" />
+                        <Link inputowner="21" indexofinput="2" outputowner="31" indexofoutput="4" />
+                        <Link inputowner="32" indexofinput="2" outputowner="26" indexofoutput="4" />
+                        <Link inputowner="28" indexofinput="2" outputowner="32" indexofoutput="4" />
+                        <Link inputowner="7" indexofinput="2" outputowner="28" indexofoutput="4" />
+                    </Diagram>
+                </BehaviorKeyframe>
+            </BehaviorLayer>
+        </Timeline>
+    </Box>
+</ChoregrapheProject>

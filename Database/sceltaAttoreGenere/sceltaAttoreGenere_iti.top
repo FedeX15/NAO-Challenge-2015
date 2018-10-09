@@ -1,0 +1,10 @@
+topic: ~sceltaAttoreGenere()
+language: iti
+concept:(generi) ^rand[frenetico drammatico fantastico simpatico romantico] $genererandom = $1
+concept: (genere) ~generi
+u:(ciao nao)ciao, come ti chiami?
+        u2:(mi chiamo _[Tom Maria Markus Sven Emma])ciao $1 che cosa hai     voglia di vedere? Ad esempio qualcosa di ~generi $Nome = $1
+            u3:(["vorrei vedere" "ho voglia di" "voglio vedere"] ["qualcosa di" "un film"] _[frenetico drammatico fantastico simpatico romantico]) $risposta = $1 va bene, guarderemo un film ^first["$risposta==frenetico di azione $Genere = Adventure" "$risposta==drammatico drammatico $Genere=Drama" "$risposta==fantastico fantasy $Genere = Fantasy" "$risposta==simpatico commedia $Genere = Comedy" "$risposta==romantico romantico $Genere = romance"], fammi pensare a cosa possiamo guardare. $AvvioScelta = 1
+            u4:([si "va bene"]) ok, guarderemo un film $genererandom ^first["$genererandom==frenetico di azione $Genere = Adventure" "$genererandom==drammatico drammatico $Genere=Drama" "$genererandom==fantastico fantasy $Genere = Fantasy" "$genererandom==simpatico commedia $Genere = Comedy" "$genererandom==romantico romantico $Genere = romance"], fammi pensare a cosa possiamo guardare. $AvvioScelta = 1
+                
+                

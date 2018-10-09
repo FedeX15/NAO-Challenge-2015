@@ -1,0 +1,4 @@
+topic: ~gioco1()
+language: iti
+u:(ciao nao) ciao! vuoi giocare a qualcosa?
+    u2:(si)ok, giochiamo! $inizioGioco=1
